@@ -10,6 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.*;
 import reactor.core.publisher.Mono;
 
+import java.util.function.BiFunction;
+
 import static org.springframework.web.reactive.function.server.RequestPredicates.*;
 import static org.springframework.web.reactive.function.server.RouterFunctions.nest;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
@@ -23,14 +25,17 @@ public class BookRouter {
                 route()
                         .GET("/",accept(MediaType.APPLICATION_JSON),handler::bookAllList)
                         .GET("/test",accept(MediaType.APPLICATION_JSON),handler::bookFindbyId)
-                        .onError(BookException.class,(e, request) -> {
-                            ErrorMessage em = new ErrorMessage();
-                            em.setErrorCode(e.getErrorCode());
-                            em.setErrorMessage(e.getMessage());
-                            return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Mono.just(em),ErrorMessage.class);
-                        })
+                        .onError(BookException.class, this::bookException)
                     .build()
 
                 );
+    }
+
+    //BookException 처리
+    private Mono<ServerResponse> bookException(BookException e, ServerRequest request){
+        ErrorMessage em = new ErrorMessage();
+        em.setErrorCode(e.getErrorCode());
+        em.setErrorMessage(e.getMessage());
+        return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Mono.just(em),ErrorMessage.class);
     }
 }
