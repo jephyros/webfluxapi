@@ -2,15 +2,21 @@ package kr.chis.webfluxapi.book.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.io.Serializable;
 
 @Document(collection = "book")
 @Getter
 @Setter
 @AllArgsConstructor
-public class Book {
-    private Long id;
+@NoArgsConstructor
+public class Book implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private String id;
     private String bookName;
 
 
