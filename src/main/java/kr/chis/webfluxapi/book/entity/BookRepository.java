@@ -1,4 +1,4 @@
-package kr.chis.webfluxapi.book.domain;
+package kr.chis.webfluxapi.book.entity;
 
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 

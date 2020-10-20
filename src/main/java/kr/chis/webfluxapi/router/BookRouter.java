@@ -24,7 +24,8 @@ public class BookRouter {
                 //route(GET("/"),handler::bookAllList)
                 route()
                         .GET("/",accept(MediaType.APPLICATION_JSON),handler::bookAllList)
-                        .GET("/test",accept(MediaType.APPLICATION_JSON),handler::bookFindbyId)
+                        .GET("/{id}",accept(MediaType.APPLICATION_JSON),handler::bookFindbyId)
+                        .POST("/",accept(MediaType.APPLICATION_JSON),handler::bookSave)
                         .onError(BookException.class, this::bookException)
                     .build()
 

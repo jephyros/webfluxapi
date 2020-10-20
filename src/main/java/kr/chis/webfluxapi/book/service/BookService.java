@@ -1,12 +1,13 @@
 package kr.chis.webfluxapi.book.service;
 
-import kr.chis.webfluxapi.book.domain.Book;
-import kr.chis.webfluxapi.exception.BookException;
+import kr.chis.webfluxapi.book.entity.Book;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 
 public interface BookService {
-    Mono<List<Book>> findAll();
-    Mono<Book> findById();
+    Flux<Book> findAll();
+    Mono<Book> findById(String id);
+    Mono<Book> save(Book book);
 }

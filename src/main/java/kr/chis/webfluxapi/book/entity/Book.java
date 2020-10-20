@@ -1,4 +1,4 @@
-package kr.chis.webfluxapi.book.domain;
+package kr.chis.webfluxapi.book.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +16,7 @@ import java.io.Serializable;
 public class Book implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private String id;
+    private String bookId;
     private String bookName;
 
 
