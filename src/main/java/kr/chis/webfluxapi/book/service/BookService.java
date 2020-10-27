@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface BookService {
     Flux<Book> findAll();
-    Mono<Book> findById(String id);
+    Mono<Book> findById(Mono<String> id);
     Mono<Book> save(Book book);
 }

@@ -33,7 +33,7 @@ public class BookHandler {
 
 //        return bookService.findById()
 //                .flatMap(v -> ok().body(Mono.just(v), Book.class));
-        String id = request.pathVariable("id");
+        Mono<String> id = Mono.just(request.pathVariable("id"));
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                 .body(bookService.findById(id),Book.class);
 
