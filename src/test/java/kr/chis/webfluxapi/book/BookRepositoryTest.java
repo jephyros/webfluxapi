@@ -14,6 +14,7 @@ import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 
 @DataMongoTest
+//@SpringBootTest
 @DisplayName("Book 엔터티테스트")
 public class BookRepositoryTest {
 
@@ -34,16 +35,25 @@ public class BookRepositoryTest {
     void bookSave(){
         Book b1 = new Book("IS-001", "죄와벌");
 
-        Disposable subscribe = bookService.save(b1).subscribe();
+        Disposable subscribe = bookService.save(b1)
+                .doOnSubscribe(v-> System.out.println("Save Subscribe==="))
+                .doOnNext(book->{
+                    System.out.println("Book Save : " + book.getBookName());
+                })
+//                .doOnNext(book->{
+//
+//                    bookRepository.findByBookId(book.getBookId())
+//                    .doOnNext(book1 ->{
+//                        System.out.println("Book Find" + book1.getBookName());
+//                    }).subscribe();
+//                })
+                .subscribe();
+
         bookRepository.findByBookId("IS-001")
-
-                .flatMap(e-> {
-                    System.out.println(e.getBookName());
-                    return Mono.just(e);
-                    }
-                ).subscribe();
-
-
+                .doOnSubscribe(v-> System.out.println("FindByBookID Subscribe==="))
+                .doOnNext(v->{
+                    System.out.println("Book Find : " + v.getBookName());
+                }).subscribe();
 
 
     }
