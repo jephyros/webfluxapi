@@ -39,4 +39,9 @@ public class BookServiceImpl implements BookService{
     public Mono<Book> save(Book book) {
         return bookRepository.save(book);
     }
+
+    @Override
+    public Mono<Void> deleteAll(){
+        return bookRepository.deleteAll();
+    }
 }
