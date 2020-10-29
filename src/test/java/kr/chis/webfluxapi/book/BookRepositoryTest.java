@@ -36,6 +36,7 @@ public class BookRepositoryTest {
         createBookThree();
     }
 
+    // 참고 https://github.com/jephyros/Teach-ReactiveSpring/blob/master/learn-reactivespring/src/test/java/com/learnreactivespring/repository/ItemReactiveRepositorytest.java
 
     @Test
     @DisplayName("Book 을 저장한다.")
