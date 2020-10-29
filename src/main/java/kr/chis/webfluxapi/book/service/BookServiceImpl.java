@@ -2,14 +2,12 @@ package kr.chis.webfluxapi.book.service;
 
 import kr.chis.webfluxapi.book.entity.Book;
 import kr.chis.webfluxapi.book.entity.BookRepository;
+import kr.chis.webfluxapi.exception.GlobalException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.time.Duration;
-import java.util.Arrays;
-import java.util.List;
 
 @Slf4j
 @Component
@@ -37,6 +35,10 @@ public class BookServiceImpl implements BookService{
 
     @Override
     public Mono<Book> save(Book book) {
+
+//        if (1==1){
+//            throw new GlobalException(HttpStatus.BAD_REQUEST,"reqquest param book is error");
+//        }
         return bookRepository.save(book);
     }
 
