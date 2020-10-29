@@ -50,7 +50,7 @@ public class BookRepositoryTest {
             //저장
         StepVerifier.create(savebook)
                 .expectSubscription()
-                .assertNext(book -> { // DB에서 저장 조회 확인 ?
+                .assertNext(book -> { // DB에서 저장 조회 확인 변경 ? ToDo
                     assertThat(book.getBookName()).as("기대값:" + b1.getBookName()).isEqualTo(b1.getBookName());
                     assertThat(book.getBookId()).as("기대값:" + b1.getBookId()).isEqualTo(b1.getBookId());
                 } ).verifyComplete();

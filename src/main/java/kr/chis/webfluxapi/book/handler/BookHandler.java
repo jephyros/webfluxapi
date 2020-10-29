@@ -42,7 +42,7 @@ public class BookHandler {
                 .flatMap(book -> ServerResponse.ok()
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .body(BodyInserters.fromValue(book)))
-                .defaultIfEmpty(Objects.requireNonNull(ServerResponse.status(HttpStatus.NOT_FOUND).build().block()));
+                .defaultIfEmpty(Objects.requireNonNull(ServerResponse.status(HttpStatus.NOT_FOUND).build().block()));//ToDo - block?
 
 
     }
