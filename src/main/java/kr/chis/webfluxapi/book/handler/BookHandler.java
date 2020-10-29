@@ -2,14 +2,16 @@ package kr.chis.webfluxapi.book.handler;
 
 import kr.chis.webfluxapi.book.entity.Book;
 import kr.chis.webfluxapi.book.service.BookService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
+import java.util.Objects;
 
 @Component
 public class BookHandler {
@@ -32,8 +34,15 @@ public class BookHandler {
     public Mono<ServerResponse> bookFindbyId(ServerRequest request)  {
 
         Mono<String> id = Mono.just(request.pathVariable("id"));
-        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
-                .body(bookService.findById(id),Book.class);
+//        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+//                .body(bookService.findById(id),Book.class)
+//                .defaultIfEmpty(Objects.requireNonNull(ServerResponse.status(HttpStatus.NOT_FOUND).build().block()));
+
+        return bookService.findById(id)
+                .flatMap(book -> ServerResponse.ok()
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .body(BodyInserters.fromValue(book)))
+                .defaultIfEmpty(Objects.requireNonNull(ServerResponse.status(HttpStatus.NOT_FOUND).build().block()));
 
 
     }

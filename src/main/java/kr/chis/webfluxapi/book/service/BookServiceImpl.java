@@ -40,7 +40,7 @@ public class BookServiceImpl implements BookService{
     @Override
     public Mono<Book> save(Book book) {
         if(StringUtils.isEmpty(book.getBookId()) || StringUtils.isEmpty(book.getBookName())){
-            throw new GlobalException(HttpStatus.BAD_REQUEST, BookErrorCode.S001.getCode(),BookErrorCode.S001.getDesc());
+            throw new GlobalException(HttpStatus.BAD_REQUEST, BookErrorCode.B404001.getCode(),BookErrorCode.B404001.getDesc());
         }
         return bookRepository.save(book);
     }
