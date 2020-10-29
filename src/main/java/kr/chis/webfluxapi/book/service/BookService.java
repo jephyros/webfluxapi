@@ -10,4 +10,6 @@ public interface BookService {
     Mono<Book> findById(Mono<String> id);
     Mono<Book> save(Book book);
     Mono<Void> deleteAll();
+    Mono<Void> deleteById(String id);
+    Flux<Book> findByBookId(String bookId);
 }

@@ -49,4 +49,15 @@ public class BookServiceImpl implements BookService{
     public Mono<Void> deleteAll(){
         return bookRepository.deleteAll();
     }
+
+    @Override
+    public Mono<Void> deleteById(String id){
+        return bookRepository.deleteById(id);
+    }
+
+    @Override
+    public Flux<Book> findByBookId(String bookId) {
+        return bookRepository.findByBookId(bookId);
+    }
+
 }
