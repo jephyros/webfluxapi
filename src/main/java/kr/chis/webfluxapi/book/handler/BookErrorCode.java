@@ -1,12 +1,12 @@
-package kr.chis.webfluxapi.common;
+package kr.chis.webfluxapi.book.handler;
 
 /**
  * @author InSeok
  * Date : 2020-10-29
  * Remark :
  */
-public enum  ErrorCode {
-    S001("S001", "잘못된 요청입니다.","Bad request"),
+public enum BookErrorCode {
+    S001("S001", "잘못된 요청입니다.(Bad Request)","Bad request"),
 
     ;
 
@@ -14,7 +14,7 @@ public enum  ErrorCode {
     private String desc;
     private String desc_eng;
 
-    ErrorCode(String code, String desc, String desc_eng) {
+    BookErrorCode(String code, String desc, String desc_eng) {
         this.code = code;
         this.desc = desc;
         this.desc_eng = desc_eng;

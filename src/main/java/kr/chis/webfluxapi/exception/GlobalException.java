@@ -9,15 +9,21 @@ import org.springframework.web.server.ResponseStatusException;
  * Remark :
  */
 public class GlobalException  extends ResponseStatusException {
+    private String code;
     public GlobalException(HttpStatus status) {
         super(status);
     }
 
-    public GlobalException(HttpStatus status, String reason) {
+    public GlobalException(HttpStatus status,String code, String reason) {
         super(status, reason);
+        this.code = code;
     }
 
     public GlobalException(HttpStatus status, String reason, Throwable cause) {
         super(status, reason, cause);
+    }
+
+    public String getCode() {
+        return code;
     }
 }
