@@ -6,7 +6,7 @@ package kr.chis.webfluxapi.book.handler;
  * Remark :
  */
 public enum BookErrorCode {
-    S001("S001", "잘못된 요청입니다.(Bad Request)","Bad request"),
+    B404001("B404001", "잘못된 요청입니다.(Bad Request)","Bad request"),
 
     ;
 
