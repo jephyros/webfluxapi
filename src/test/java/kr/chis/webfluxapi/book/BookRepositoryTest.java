@@ -22,6 +22,10 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 @DisplayName("Book 엔터티테스트")
 public class BookRepositoryTest {
 
+    Book b1 = new Book("IS-001", "죄와벌1");
+    Book b2 = new Book("IS-002", "죄와벌2");
+    Book b3 = new Book("IS-003", "죄와벌3");
+
     @Autowired
     BookRepository bookRepository;
 
@@ -30,9 +34,9 @@ public class BookRepositoryTest {
     @BeforeEach
     void before(){
         this.bookService = new BookServiceImpl(bookRepository);
-        //데이터 모두 삭
-        bookService.deleteAll().subscribe();
-        //3개 데이터 저장
+        //데이터 모두 삭제
+        bookRepository.deleteAll().block();
+        //3개 테스트 데이터 저장
         createBookThree();
     }
 
@@ -48,21 +52,18 @@ public class BookRepositoryTest {
         Mono<Book> savebook = bookService.save(b1);
 
         //then
-            //저장
+        //저장
         StepVerifier.create(savebook)
                 .expectSubscription()
-                .assertNext(book -> { // DB에서 저장 조회 확인 변경 ? ToDo
+                .assertNext(book -> {
                     assertThat(book.getBookName()).as("기대값:" + b1.getBookName()).isEqualTo(b1.getBookName());
                     assertThat(book.getBookId()).as("기대값:" + b1.getBookId()).isEqualTo(b1.getBookId());
                 } ).verifyComplete();
-            //총데이터수 4개 확인
+        //저장 후 총데이터수 4개 확인
         StepVerifier.create(bookRepository.findAll())
                 .expectSubscription()
                 .expectNextCount(4)
                 .verifyComplete();
-
-//        bookRepository.findAll()
-//                .doOnNext(book -> System.out.println(book.getBookName())).blockLast();
 
 
 
@@ -91,11 +92,37 @@ public class BookRepositoryTest {
 
     }
 
+    @Test
+    @DisplayName("Book 을 모두 조회한다.")
+    void bookDeleteAll(){
+        //given
+        //when then
+        StepVerifier.create(bookRepository.findAll())
+                .expectSubscription()
+                .expectNextCount(3)
+                .verifyComplete();
+
+    }
+
+    @Test
+    @DisplayName("Book 을 BookId로 조회한다.")
+    void bookFindByBookId(){
+        //given
+        //when then
+        StepVerifier.create(bookRepository.findByBookId(b2.getBookId()))
+                .expectSubscription()
+                .assertNext( book -> {
+                    assertThat(book.getBookId()).as("기대값 :" + b2.getBookId()).isEqualTo(b2.getBookId());
+                    assertThat(book.getBookName()).as("기대값 :" + b2.getBookName()).isEqualTo(b2.getBookName());
+                })
+                .expectNextCount(0) // 1개조회했기때문에 0이여야한다.
+                .verifyComplete();
+
+    }
+
 
     private void createBookThree(){
-        Book b1 = new Book("IS-001", "죄와벌1");
-        Book b2 = new Book("IS-002", "죄와벌2");
-        Book b3 = new Book("IS-003", "죄와벌3");
-        bookRepository.saveAll(Arrays.asList(b1, b2, b3)).subscribe();
+
+        bookRepository.saveAll(Arrays.asList(b1, b2, b3)).blockLast();
     }
 }

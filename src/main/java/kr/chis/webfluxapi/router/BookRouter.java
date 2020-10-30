@@ -23,6 +23,7 @@ public class BookRouter {
                 route()
                         .GET("/",accept(MediaType.APPLICATION_JSON),handler::bookAllList)
                         .GET("/{id}",accept(MediaType.APPLICATION_JSON),handler::bookFindbyId)
+                        .DELETE("/{id}",accept(MediaType.APPLICATION_JSON),handler::bookDeleteById)
                         .POST("/",accept(MediaType.APPLICATION_JSON),handler::bookSave)
                     .build()
 

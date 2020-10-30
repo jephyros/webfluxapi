@@ -23,8 +23,6 @@ public class BookHandler {
 
     public Mono<ServerResponse> bookAllList(ServerRequest request){
 
-
-
         Flux<Book> books = bookService.findAll();
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                 .body(books,Book.class);
@@ -37,12 +35,15 @@ public class BookHandler {
 //        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
 //                .body(bookService.findById(id),Book.class)
 //                .defaultIfEmpty(Objects.requireNonNull(ServerResponse.status(HttpStatus.NOT_FOUND).build().block()));
+        //
 
+        @SuppressWarnings("BlockingMethodInNonBlockingContext")
+        ServerResponse notFound = ServerResponse.status(HttpStatus.NOT_FOUND).build().block();
         return bookService.findById(id)
                 .flatMap(book -> ServerResponse.ok()
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .body(BodyInserters.fromValue(book)))
-                .defaultIfEmpty(Objects.requireNonNull(ServerResponse.status(HttpStatus.NOT_FOUND).build().block()));//ToDo - block?
+                .defaultIfEmpty(Objects.requireNonNull(notFound));
 
 
     }
@@ -55,4 +56,23 @@ public class BookHandler {
                 .body(book.flatMap(bookService::save),Book.class);
 
     }
+
+    public Mono<ServerResponse> bookDeleteById(ServerRequest request)  {
+
+        String id = request.pathVariable("id");
+//        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+//                .body(bookService.findById(id),Book.class)
+//                .defaultIfEmpty(Objects.requireNonNull(ServerResponse.status(HttpStatus.NOT_FOUND).build().block()));
+        //
+
+        return bookService.deleteById(id)
+                .flatMap(book -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build());
+
+
+
+
+    }
+
 }

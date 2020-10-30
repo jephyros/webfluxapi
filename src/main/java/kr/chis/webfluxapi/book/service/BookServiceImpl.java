@@ -52,7 +52,9 @@ public class BookServiceImpl implements BookService{
 
     @Override
     public Mono<Void> deleteById(String id){
+        //Delete todo --삭제시 존재하는지 체크?
         return bookRepository.deleteById(id);
+
     }
 
     @Override
