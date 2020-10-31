@@ -34,13 +34,14 @@ public class BookServiceImpl implements BookService{
     public Mono<Book> findById(Mono<String> id) {
 
 
-        return  bookRepository.findById(id);
+        return  bookRepository.findById(id)
+                .switchIfEmpty(Mono.just(new Book()).handle((v,s)->s.error(new GlobalException(HttpStatus.NOT_FOUND, BookErrorCode.B404001.getCode(),BookErrorCode.B404001.getDesc()))));
     }
 
     @Override
     public Mono<Book> save(Book book) {
         if(StringUtils.isEmpty(book.getBookId()) || StringUtils.isEmpty(book.getBookName())){
-            throw new GlobalException(HttpStatus.BAD_REQUEST, BookErrorCode.B404001.getCode(),BookErrorCode.B404001.getDesc());
+            throw new GlobalException(HttpStatus.BAD_REQUEST, BookErrorCode.B400001.getCode(),BookErrorCode.B400001.getDesc());
         }
         return bookRepository.save(book);
     }
@@ -52,21 +53,12 @@ public class BookServiceImpl implements BookService{
 
     @Override
     public Mono<Void> deleteById(String id){
+        //System.out.println("==========="+book.getBookName());
         return bookRepository.findById(id)
-                //.flatMap(book-> bookRepository.delete(book))
-                //Delete todo --삭제시 존재하는지 체크?
+                //삭제시 DB 에 값이없으면 Exception 발생
                 .switchIfEmpty(Mono.just(new Book()).handle((v,s)->s.error(new GlobalException(HttpStatus.NOT_FOUND, BookErrorCode.B404001.getCode(),BookErrorCode.B404001.getDesc()))))
-                .handle((book,sink)->{
-                    if (isNull(book)) {
-                        sink.error(new GlobalException(HttpStatus.BAD_REQUEST, BookErrorCode.B404001.getCode(),BookErrorCode.B404001.getDesc()));
-                    }else{
+                .flatMap(bookRepository::delete);
 
-                        sink.complete();
-                    }
-                })
-
-                ;
-        //return bookRepository.deleteById(id);
 
     }
 

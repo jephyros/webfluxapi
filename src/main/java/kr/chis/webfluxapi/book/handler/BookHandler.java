@@ -32,18 +32,16 @@ public class BookHandler {
     public Mono<ServerResponse> bookFindbyId(ServerRequest request)  {
 
         Mono<String> id = Mono.just(request.pathVariable("id"));
-//        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
-//                .body(bookService.findById(id),Book.class)
-//                .defaultIfEmpty(Objects.requireNonNull(ServerResponse.status(HttpStatus.NOT_FOUND).build().block()));
-        //
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+                .body(bookService.findById(id),Book.class);
 
-        @SuppressWarnings("BlockingMethodInNonBlockingContext")
-        ServerResponse notFound = ServerResponse.status(HttpStatus.NOT_FOUND).build().block();
-        return bookService.findById(id)
-                .flatMap(book -> ServerResponse.ok()
-                                    .contentType(MediaType.APPLICATION_JSON)
-                                    .body(BodyInserters.fromValue(book)))
-                .defaultIfEmpty(Objects.requireNonNull(notFound));
+        // 2안. 핸들러에서 notFound 보내기
+        //        ServerResponse notFound = ServerResponse.status(HttpStatus.NOT_FOUND).build().block();
+        //        return bookService.findById(id)
+        //                .flatMap(book -> ServerResponse.ok()
+        //                                    .contentType(MediaType.APPLICATION_JSON)
+        //                                    .body(BodyInserters.fromValue(book)))
+        //                .defaultIfEmpty(Objects.requireNonNull(notFound));
 
 
     }
@@ -65,7 +63,7 @@ public class BookHandler {
 //                .defaultIfEmpty(Objects.requireNonNull(ServerResponse.status(HttpStatus.NOT_FOUND).build().block()));
         //
 
-        return bookService.deleteById(id)
+        return bookService.deleteById(id).log()
                 .flatMap(book -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
                         .build());

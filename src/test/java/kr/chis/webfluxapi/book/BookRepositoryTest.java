@@ -32,7 +32,7 @@ public class BookRepositoryTest {
     BookService bookService;
 
     @BeforeEach
-    void before(){
+    void before() {
         this.bookService = new BookServiceImpl(bookRepository);
         //데이터 모두 삭제
         bookRepository.deleteAll().block();
@@ -44,7 +44,7 @@ public class BookRepositoryTest {
 
     @Test
     @DisplayName("Book 을 저장한다.")
-    void bookSave(){
+    void bookSave() {
         //given
         Book b1 = new Book("IS-004", "죄와벌4");
 
@@ -58,7 +58,7 @@ public class BookRepositoryTest {
                 .assertNext(book -> {
                     assertThat(book.getBookName()).as("기대값:" + b1.getBookName()).isEqualTo(b1.getBookName());
                     assertThat(book.getBookId()).as("기대값:" + b1.getBookId()).isEqualTo(b1.getBookId());
-                } ).verifyComplete();
+                }).verifyComplete();
         //저장 후 총데이터수 4개 확인
         StepVerifier.create(bookRepository.findAll())
                 .expectSubscription()
@@ -66,12 +66,11 @@ public class BookRepositoryTest {
                 .verifyComplete();
 
 
-
     }
 
     @Test
     @DisplayName("Book 을 삭제한다.")
-    void bookDeleteByID(){
+    void bookDeleteByID() {
         //given
 
         //when
@@ -80,11 +79,11 @@ public class BookRepositoryTest {
 
 
         //then
-            //삭제
+        //삭제
         StepVerifier.create(delBook)
                 .expectSubscription()
                 .verifyComplete();
-            //삭제후 라인수확인
+        //삭제후 라인수확인
         StepVerifier.create(bookRepository.findAll())
                 .expectSubscription()
                 .expectNextCount(2)
@@ -92,9 +91,10 @@ public class BookRepositoryTest {
 
     }
 
+
     @Test
     @DisplayName("Book 을 모두 조회한다.")
-    void bookDeleteAll(){
+    void bookDeleteAll() {
         //given
         //when then
         StepVerifier.create(bookRepository.findAll())
@@ -106,12 +106,12 @@ public class BookRepositoryTest {
 
     @Test
     @DisplayName("Book 을 BookId로 조회한다.")
-    void bookFindByBookId(){
+    void bookFindByBookId() {
         //given
         //when then
         StepVerifier.create(bookRepository.findByBookId(b2.getBookId()))
                 .expectSubscription()
-                .assertNext( book -> {
+                .assertNext(book -> {
                     assertThat(book.getBookId()).as("기대값 :" + b2.getBookId()).isEqualTo(b2.getBookId());
                     assertThat(book.getBookName()).as("기대값 :" + b2.getBookName()).isEqualTo(b2.getBookName());
                 })
@@ -120,8 +120,9 @@ public class BookRepositoryTest {
 
     }
 
+    //todo 실패 테스트 - 조회 ,삭제 Exception 테스트
 
-    private void createBookThree(){
+    private void createBookThree() {
 
         bookRepository.saveAll(Arrays.asList(b1, b2, b3)).blockLast();
     }
