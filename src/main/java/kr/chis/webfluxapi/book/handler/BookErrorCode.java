@@ -6,7 +6,9 @@ package kr.chis.webfluxapi.book.handler;
  * Remark :
  */
 public enum BookErrorCode {
-    B404001("B404001", "잘못된 요청입니다.(Bad Request)","Bad request"),
+    B400001("B400001", "잘못된 요청입니다.(Bad Request)","Bad Request"),
+
+    B404001("B404001", "자료를 찾을수 없습니다.(Not Found)","Not Found"),
 
     ;
 

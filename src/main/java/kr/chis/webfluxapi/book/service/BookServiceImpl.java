@@ -11,7 +11,7 @@ import org.springframework.util.StringUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Optional;
+import static java.util.Objects.isNull;
 
 @Slf4j
 @Component
@@ -52,8 +52,21 @@ public class BookServiceImpl implements BookService{
 
     @Override
     public Mono<Void> deleteById(String id){
-        //Delete todo --삭제시 존재하는지 체크?
-        return bookRepository.deleteById(id);
+        return bookRepository.findById(id)
+                //.flatMap(book-> bookRepository.delete(book))
+                //Delete todo --삭제시 존재하는지 체크?
+                .switchIfEmpty(Mono.just(new Book()).handle((v,s)->s.error(new GlobalException(HttpStatus.NOT_FOUND, BookErrorCode.B404001.getCode(),BookErrorCode.B404001.getDesc()))))
+                .handle((book,sink)->{
+                    if (isNull(book)) {
+                        sink.error(new GlobalException(HttpStatus.BAD_REQUEST, BookErrorCode.B404001.getCode(),BookErrorCode.B404001.getDesc()));
+                    }else{
+
+                        sink.complete();
+                    }
+                })
+
+                ;
+        //return bookRepository.deleteById(id);
 
     }
 
