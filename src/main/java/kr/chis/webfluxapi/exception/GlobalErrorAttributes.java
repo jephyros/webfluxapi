@@ -22,6 +22,7 @@ public class GlobalErrorAttributes extends DefaultErrorAttributes {
         if(getError(request) instanceof  GlobalException){
             GlobalException ex = (GlobalException) getError(request);
             map.put("exception", ex.getClass().getSimpleName());
+            //map.put("message", ex.getReason());
             map.put("message", ex.getMessage());
             map.put("status", ex.getStatus().value());
             map.put("code", ex.getCode());

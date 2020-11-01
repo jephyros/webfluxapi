@@ -2,8 +2,10 @@ package kr.chis.webfluxapi.book;
 
 import kr.chis.webfluxapi.book.entity.Book;
 import kr.chis.webfluxapi.book.entity.BookRepository;
+import kr.chis.webfluxapi.book.handler.BookErrorCode;
 import kr.chis.webfluxapi.book.service.BookService;
 import kr.chis.webfluxapi.book.service.BookServiceImpl;
+import kr.chis.webfluxapi.exception.GlobalException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,7 @@ import reactor.test.StepVerifier;
 
 import java.util.Arrays;
 
+import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 @DataMongoTest
@@ -68,29 +71,6 @@ public class BookRepositoryTest {
 
     }
 
-    @Test
-    @DisplayName("Book 을 삭제한다.")
-    void bookDeleteByID() {
-        //given
-
-        //when
-        Flux<Void> delBook = bookRepository.findByBookId("IS-002")
-                .flatMap(book -> bookService.deleteById(book.getId()));
-
-
-        //then
-        //삭제
-        StepVerifier.create(delBook)
-                .expectSubscription()
-                .verifyComplete();
-        //삭제후 라인수확인
-        StepVerifier.create(bookRepository.findAll())
-                .expectSubscription()
-                .expectNextCount(2)
-                .verifyComplete();
-
-    }
-
 
     @Test
     @DisplayName("Book 을 모두 조회한다.")
@@ -120,7 +100,58 @@ public class BookRepositoryTest {
 
     }
 
-    //todo 실패 테스트 - 조회 ,삭제 Exception 테스트
+    @Test
+    @DisplayName("Book 을 삭제한다.")
+    void bookDeleteByID() {
+        //given
+
+        //when
+        Flux<Void> delBook = bookRepository.findByBookId("IS-002")
+                .flatMap(book -> bookService.deleteById(book.getId()));
+        //then
+        //삭제
+        StepVerifier.create(delBook)
+                .expectSubscription()
+                .verifyComplete();
+        //삭제후 라인수확인
+        StepVerifier.create(bookRepository.findAll())
+                .expectSubscription()
+                .expectNextCount(2)
+                .verifyComplete();
+
+    }
+
+    @Test
+    @DisplayName("DB에 없는값을 삭제시 예외를 발생시킨다.")
+    void bookDeleteByIDException() {
+        //give
+
+        //when then
+        StepVerifier.create(bookService.deleteById("xxxxxx"))
+                .expectSubscription()
+                .verifyErrorSatisfies(e->{
+                    e.getMessage().contains(BookErrorCode.B404001.getDesc());
+                });
+                //.verifyErrorMessage(BookErrorCode.B404001.getDesc());
+                //.verifyError(GlobalException.class);
+
+    }
+
+    @Test
+    @DisplayName("DB에 없는값을 조회시 예외를 발생시킨다.")
+    void bookFindByIDException() {
+        //give
+
+        //when then
+        StepVerifier.create(bookService.findById(Mono.just("xxxxxx")))
+                .expectSubscription()
+                .verifyErrorSatisfies(e->{
+                    e.getMessage().contains(BookErrorCode.B404001.getDesc());
+                });
+        //.verifyErrorMessage(BookErrorCode.B404001.getDesc());
+        //.verifyError(GlobalException.class);
+
+    }
 
     private void createBookThree() {
 
