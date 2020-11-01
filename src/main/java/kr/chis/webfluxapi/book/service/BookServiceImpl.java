@@ -11,11 +11,13 @@ import org.springframework.util.StringUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
+
 import static java.util.Objects.isNull;
 
 @Slf4j
 @Component
-public class BookServiceImpl implements BookService{
+public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
 
@@ -26,7 +28,6 @@ public class BookServiceImpl implements BookService{
     public Flux<Book> findAll() {
 
 
-
         return bookRepository.findAll();
     }
 
@@ -34,31 +35,48 @@ public class BookServiceImpl implements BookService{
     public Mono<Book> findById(Mono<String> id) {
 
 
-        return  bookRepository.findById(id)
-                .switchIfEmpty(Mono.just(new Book()).handle((v,s)->s.error(new GlobalException(HttpStatus.NOT_FOUND, BookErrorCode.B404001.getCode(),BookErrorCode.B404001.getDesc()))));
+        return bookRepository.findById(id)
+                .switchIfEmpty(Mono.just(new Book()).handle((v, s) -> s.error(new GlobalException(HttpStatus.NOT_FOUND, BookErrorCode.B404001.getCode(), BookErrorCode.B404001.getDesc()))));
     }
 
     @Override
     public Mono<Book> save(Book book) {
-        if(StringUtils.isEmpty(book.getBookId()) || StringUtils.isEmpty(book.getBookName())){
-            throw new GlobalException(HttpStatus.BAD_REQUEST, BookErrorCode.B400001.getCode(),BookErrorCode.B400001.getDesc());
+        if (StringUtils.isEmpty(book.getBookId()) || StringUtils.isEmpty(book.getBookName())) {
+            throw new GlobalException(HttpStatus.BAD_REQUEST, BookErrorCode.B400001.getCode(), BookErrorCode.B400001.getDesc());
         }
+        book.setInsertTime(LocalDateTime.now());
+        book.setModifyTime(LocalDateTime.now());
         return bookRepository.save(book);
     }
 
     @Override
-    public Mono<Void> deleteAll(){
+    public Mono<Book> update(String id, Book book) {
+        if (StringUtils.isEmpty(book.getBookId()) || StringUtils.isEmpty(book.getBookName())) {
+            throw new GlobalException(HttpStatus.BAD_REQUEST, BookErrorCode.B400001.getCode(), BookErrorCode.B400001.getDesc());
+        }
+
+        return bookRepository.findById(id)
+                .flatMap(bookSave -> {
+                    bookSave.setBookId(book.getBookId());
+                    bookSave.setBookName(book.getBookName());
+                    bookSave.setModifyTime(LocalDateTime.now());
+                    return bookRepository.save(bookSave);
+                });
+    }
+
+
+    @Override
+    public Mono<Void> deleteAll() {
         return bookRepository.deleteAll();
     }
 
     @Override
-    public Mono<Void> deleteById(String id){
+    public Mono<Void> deleteById(String id) {
         //System.out.println("==========="+book.getBookName());
         return bookRepository.findById(id)
                 //삭제시 DB 에 값이없으면 Exception 발생
-                .switchIfEmpty(Mono.just(new Book()).handle((v,s)->s.error(new GlobalException(HttpStatus.NOT_FOUND, BookErrorCode.B404001.getCode(),BookErrorCode.B404001.getDesc()))))
+                .switchIfEmpty(Mono.just(new Book()).handle((v, s) -> s.error(new GlobalException(HttpStatus.NOT_FOUND, BookErrorCode.B404001.getCode(), BookErrorCode.B404001.getDesc()))))
                 .flatMap(bookRepository::delete);
-
 
     }
 

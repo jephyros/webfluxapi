@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Document(collection = "book")
 @Getter
@@ -22,6 +23,9 @@ public class Book implements Serializable {
 
     private String bookId;
     private String bookName;
+
+    private LocalDateTime insertTime;
+    private LocalDateTime modifyTime;
 
     public Book(String bookId, String bookName) {
         this.bookId = bookId;

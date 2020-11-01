@@ -152,6 +152,8 @@ public class BookRepositoryTest {
         //.verifyError(GlobalException.class);
 
     }
+    // todo update 정상, 익셉션 테스트
+
 
     private void createBookThree() {
 

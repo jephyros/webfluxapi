@@ -24,8 +24,8 @@ public class BookRouter {
                         .GET("/{id}",accept(MediaType.APPLICATION_JSON),handler::bookFindbyId)
                         .DELETE("/{id}",accept(MediaType.APPLICATION_JSON),handler::bookDeleteById)
                         .POST("/",accept(MediaType.APPLICATION_JSON),handler::bookSave)
+                        .PUT("/{id}",accept(MediaType.APPLICATION_JSON),handler::bookUpdate)
                     .build()
-                // todo 업데이트
                 );
     }
 

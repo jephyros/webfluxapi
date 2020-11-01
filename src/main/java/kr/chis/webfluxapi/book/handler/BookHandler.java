@@ -55,6 +55,15 @@ public class BookHandler {
 
     }
 
+    public Mono<ServerResponse> bookUpdate(ServerRequest request) {
+        String id = request.pathVariable("id");
+        Mono<Book> book = request.bodyToMono(Book.class);
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(book.flatMap(v-> bookService.update(id,v)),Book.class);
+
+    }
+
     public Mono<ServerResponse> bookDeleteById(ServerRequest request)  {
 
         String id = request.pathVariable("id");
